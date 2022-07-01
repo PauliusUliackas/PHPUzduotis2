@@ -1,5 +1,3 @@
-
-
 <?php
 
 /*
@@ -9,7 +7,8 @@ Issaugoti duomenis is masyvo, i faila (CSV, JSON, XML)
 Reikalavimai:
 KISS funkcija turi buti maziau negu 50 liniju kodo.
 DRY negalima kopijuoti arba rasyti identisko kodo.
-SOLID Kiekviena class turi buti naudojama vienai reksmei (Planas naudoti interface CSV JSON ir XML atskirai).
+SOLID Kiekviena class turi buti naudojama vienai reksmei 
+(Planas naudoti interface CSV JSON ir XML atskirai).
 
 
 Uzduociai atlikti buvo naudojamas PHP su XAMPP pagalba.
@@ -18,15 +17,9 @@ Uzduociai atlikti buvo naudojamas PHP su XAMPP pagalba.
 
 echo " DEBUG";
 
-/*
-
-    Class Reader:
-    Skirta skaityti duomenu failui.
-    Contructor priima failo varda ($filename)
-
-*/
-
-$data = array(array('first_name'=>'Kiestis', 'age'=>'29', 'gender'=>'male'),array('first_name'=>'Vytska', 'age'=>'32', 'gender'=>'male'),array('first_name'=>'Karina', 'age'=>'25', 'gender'=>'female'));
+$data = array(array('first_name'=>'Kiestis', 'age'=>'29', 'gender'=>'male'),
+array('first_name'=>'Vytska', 'age'=>'32', 'gender'=>'male'),
+array('first_name'=>'Karina', 'age'=>'25', 'gender'=>'female'));
 
 /*
 
@@ -52,17 +45,17 @@ class Person
 
     function __destruct(){}
 
-    function get_name()
+    function getName()
     {
         return $this->name;
     }
 
-    function get_age()
+    function getAge()
     {
         return $this->age;
     }
 
-    function get_gender()
+    function getGender()
     {
         return $this->gender;
     }
@@ -71,48 +64,64 @@ class Person
 
 /*
 
-    class Reader skirta doumenu skaitymui is masyvo.
-    constructor sukuria nauja masyva atminciai. Ideja yra ta, jog galima perskaityti kelis skirtingus masyvus ir tada viska irasyti vienu kartu.
-    Taip pat galima pasiekti atminti jeigu del kazkokiu atveju reiktu kazka irtrinti ar pakeist.
+class Reader skirta doumenu skaitymui is masyvo.
+constructor sukuria nauja masyva atminciai. 
+Galima perskaityti kelis skirtingus masyvus ir tada viska irasyti vienu kartu.
+Taip pat galima pasiekti atminti jeigu del kazkokiu atveju reiktu kazka irtrinti ar pakeist.
 
 */
 
 class Reader
 {
-    private $data; // atmintis
+     // atmintis
+    private $data;
 
-    function __construct() 
-    {
+    function __construct() {
         $data = array();
     }
 
-    function __destruct()
-    {}
+    function __destruct(){}
+
     // Skaito is skirto masyvo -> data.
-    function read($data)
-    {
-        for($i = 0; $i < count($data); $i++)
-        {  
+    function read($data){
+        for($i = 0; $i < count($data); $i++){  
             $this->data[] = new Person($data[0], $data[1], $data[2]);
         }
     }
+
     // Galima pasiekti atminti.
-    function get_data()
-    {
+    function getData(){
         return $data;
     }
+
     // funkcija skirta isvalyti visa atminti
-    function clear()
-    {
+    function clear(){
         $this->data = array();
     }
 
 };
 
+class Writer
+{
+
+    function __construct(){}
+
+    function __destruct(){}
+
+    function writeToJson($data){
+        
+    }
+
+    function writeToCSV($data){
+
+    }
+
+    function writeToXML($data){
+
+    }
+
+}
+
 $reader = new Reader();
 $reader->read($data);
-
-
-
-
 ?>
