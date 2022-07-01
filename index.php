@@ -18,58 +18,92 @@ $data = array(array('first_name'=>'Kiestis', 'age'=>'29', 'gender'=>'male'),
 array('first_name'=>'Vytska', 'age'=>'32', 'gender'=>'male'),
 array('first_name'=>'Karina', 'age'=>'25', 'gender'=>'female'));
 
+/*
+    abstract class Writer skirta 3 kitom Writer klasem naudojama kaip interface.
+*/
+
 abstract class Writer
 {
-    abstract protected function process($data);
-
-    public function write($filename, $info)
-    {
-        $file = fopen($filename, "w");
-        fwrite($file, $info);
-        fclose($file);
-    }
+    abstract protected function write($data);
 }
-// Poorly pu to files
+
+/*
+    class WriterJSON saugo duomenis is asociatyvinio masyvo i JSON faila.
+*/
+
 class WriterJSON extends Writer
 {
-    public function process($data)
+    public function write($data)
     {
         $file = fopen("database.json", "w");
-        $output = array();
-        for($index = 0; $index < count($data); $index++){
-            $output[] = $data[$index];
-        }
-        fwrite($file, json_encode($output));
+        fwrite($file, json_encode($data));
         fclose($file);
     }
 }
+
+/*
+
+class WriterCSV saugo duomenis is asociatyvinio masyvo i CSV faila.
+
+*/
 
 class WriterCSV extends Writer
 {
-    public function process($data)
+
+    /*
+
+    funkcija write turi antra array header jis naudojamas isiminti
+    parametram (first_name, age ir gender). Jei bus prodeta nauju
+    parametru i data masyva 17 eiluteje funkcija automatiskai
+    peisitakys.
+
+    if naudojami kad pirma karta isiminti failu parametrus (keys) ir
+    juos atspauzdinti failu virsuje (1 eiluteje).
+
+    */
+
+    public function write($data)
     {
         $header = array();
         $file = fopen("database.csv", "w");
+
         for($index = 0; $index < count($data); $index++){
             $info = array();
             foreach($data[$index] as $key => $value){
+                // isimena parametrus tik piramji karta.
                 if($index == 0){
                     $header[] = $key;
                 }
                 $info[] = $value;
             }
+
             if($index == 0){
                 fputcsv($file, $header);
             }
+
             fputcsv($file, $info);
         }
         fclose($file);
     }
 }
 
+/*
+
+class WriterXML saugo duomenis is asociatyvinio masyvo i XML faila.
+
+*/
+
 class WriterXML extends Writer
 {
-    public function process($data)
+
+    /*
+
+    funkcija wirte sukuria XML documenta ir iraso doumenis i
+    faila naudodamasis createElement() ir issaugodamas jous
+    tarp 'tags' appendChild() funkcijomis.
+    */
+
+    public function write($data)
     {
     
     $document = new DOMDocument();
@@ -95,10 +129,11 @@ class WriterXML extends Writer
     }
 }
 
+// Pagrindine programa:
 $writer = new WriterJSON();
-$writer->process($data);
+$writer->write($data);
 $writer = new WriterCSV();
-$writer->process($data);
+$writer->write($data);
 $writer = new WriterXML();
-$writer->process($data);
+$writer->write($data);
 ?>
